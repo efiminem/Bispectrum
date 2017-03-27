@@ -11,7 +11,11 @@ struct complex {
 double r, i;
 };
 
-class Hardcore {
+void printException (std::string message) {
+    std::cout << message;
+}
+
+class Hardcode {
 private:
     std::vector<double> A_v = std::vector<double>(100,0);
     std::vector<double> B_v = std::vector<double>(100,0);
@@ -27,7 +31,8 @@ public:
     double SQRT2 = 1.4142135623730950488;
     double SQRT3 = 1.7320508075688772935;
     double SQRT3DIV2 = -1.2247448713915890491;
-    double temp = 0.282094791773878143474; // = sqrt(1/(4*PI))
+    double temp3 = 0.282094791773878143474; // = sqrt(1/(4*PI))
+    double temp4 = 0.797884560802865355879892; // hyperspherical(0,0,0)
     void update (std::size_t maxL) {
         expand(maxL);
         for (std::size_t l=2; l <= maxL ; l++) {
@@ -45,17 +50,15 @@ public:
 
 class ULTRAS {
 private:
-    Hardcore tab; //table of already calculated factors
+    Hardcode tab; //table of already calculated factors
     std::vector<double> P_v; //vector of ASF
     std::vector<double> Y_v_r; //real spherical part
     std::vector<double> Y_v_i; //imaginary spherical part
     std::vector<double> Theta; // vector of angles
-    void printException (std::string message) {
-        std::cout << message;
-    }
-    void computeALF (std::size_t L, double x) {
+    void computeALFEvenMod (std::size_t L, double x) { //Mod of ALF for 
+1/2 space
         const double sintheta = sqrt(1.-x*x);
-        double temp = tab.temp;
+        double temp = tab.temp4;
         /*if (PT(L, L) >= 100) {
             for (int i=0; i<PT(L, L)- 100; i++) {
                 P_v.push_back(0);
@@ -67,7 +70,32 @@ private:
             P_v[PT(1,0)] = x*tab.SQRT3*temp;
             temp = tab.SQRT3DIV2 * sintheta * temp;
             P_v[PT(1,1)] = temp;
-            for (std::size_t l =2; l <= L ; l++) {
+            for (std::size_t l=2; l <= L ; l++) {
+                for (std::size_t m =0; m <l-1; m++) {
+                P_v[PT(l,m)]=tab.A(l,m)*(x*P_v[PT(l-1,m)]+tab.B(l,m)* 
+P_v[PT(l-2,m)]);
+                }
+            P_v[PT(l,l-1)] = x*sqrt(2*(l-1)+3)*temp;
+            temp=-sqrt(1.0+0.5/l)*sintheta*temp;
+            P_v[PT(l,l)]=temp;
+            }
+        }
+    }
+    void computeALF (std::size_t L, double x) {
+        const double sintheta = sqrt(1.-x*x);
+        double temp = tab.temp3;
+        /*if (PT(L, L) >= 100) {
+            for (int i=0; i<PT(L, L)- 100; i++) {
+                P_v.push_back(0);
+                Y_v_r.push_back(0);
+            }
+        }*/
+        P_v[PT(0,0)] = temp;
+        if (L > 0) {
+            P_v[PT(1,0)] = x*tab.SQRT3*temp;
+            temp = tab.SQRT3DIV2 * sintheta * temp;
+            P_v[PT(1,1)] = temp;
+            for (std::size_t l=2; l <= L ; l++) {
                 for (std::size_t m =0; m <l-1; m++) {
                 P_v[PT(l,m)]=tab.A(l, m)*(x*P_v[PT(l-1,m)]+tab.B(l,m)* 
 P_v[PT(l-2,m)]);
@@ -105,7 +133,7 @@ public:
     computeALF(maxL, Theta[0]);
     computeY(maxL, Theta[1]);
     }
-    complex Y (int l, int m) {
+    complex Y(int l, int m) {
         complex usphFunction;
         usphFunction.r = Y_v_r[YR(l,m)];
         usphFunction.i = Y_v_i[YR(l,m)];
@@ -135,7 +163,7 @@ args) {
 
 
 int main() {
-ULTRAS vec(0.5, 0.5, 0.5);
+ULTRAS vec(0.5, 0.5);
 //TODO: what's wrong with 10000 ?
 vec.calculate(1000);
 std::cout << vec.Y(10, -5).i;
