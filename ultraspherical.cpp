@@ -30,7 +30,7 @@ private:
         std::vector<double> multiplier;
         double costheta = sqrt(1.-sintheta*sintheta);
         double temp=0;
-        for (int h=0; h < PT(maxL,maxL); h++) multiplier.push_back(0);
+        for (int h=0; h <= PT(maxL,maxL); h++) multiplier.push_back(0);
         temp = GetNullValue(j);
         multiplier[PT(0,0)] = temp;
         if (maxL > 0) {
@@ -44,7 +44,7 @@ private:
                 multiplier[PT(l,m)]=A*(costheta*multiplier[PT(l-1,m)]+B* multiplier[PT(l-2,m)]);
                 }
             multiplier[PT(l,l-1)] = costheta*sqrt(2*(l-1)+j+1)*temp;
-            temp=-sqrt((2*l + j + 1.)/(2*l + j - 2.))*sintheta*temp;
+            temp=-sqrt((2*l + j - 1.)/(2*l + j - 2.))*sintheta*temp;
             multiplier[PT(l,l)]=temp;
             }
          }
@@ -116,10 +116,10 @@ public:
 
 
 int main() {
-ULTRAS vec(0.707, 0.707, 0.707); //sintheta
-vec.calculate(100);
-std::cout << vec.Y(0, 0, 1).r << '\n';
-//std::cout << vec.multiplier[0].r << "*" << vec.multipliers[0][PT(0,0)] << "*" << vec.multipliers[1][PT(0,0)]; //TEST
+ULTRAS vec(0.5, 0.5); //sintheta
+vec.calculate(10);
+std::cout << vec.Y(2, 2).r << '\n';
+//std::cout << vec.multiplier[1].r << "*" << vec.multipliers[0][PT(2,1)]; << "*" << vec.multipliers[1][PT(0,0)]; //TEST
 return 0;
 }
 
