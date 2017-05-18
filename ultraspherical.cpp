@@ -20,8 +20,12 @@ private:
     std::vector<int> Index;
 
     double GetNullValue (int j) {
-    
+    if (j==2) {return 1/sqrt(2);} // precomputed
+    else if (j==3) {return sqrt(2/PI);}
+    else if (j==4) {return sqrt(3)/2;}
+    else {return sqrt(j)/(sqrt(2*PI)*GetNullValue(j-1));} // if not precomputed -> recursion
     }
+
     std::vector<double> CalculateAnotherMultiplier (int j, const std::size_t maxL, double sintheta) {
         std::vector<double> multiplier;
         double costheta = sqrt(1.-sintheta*sintheta);
