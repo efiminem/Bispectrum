@@ -31,8 +31,7 @@ private:
         double costheta = sqrt(1.-sintheta*sintheta);
         double temp=0;
         for (int h=0; h < PT(maxL,maxL); h++) multiplier.push_back(0);
-        if (j==2) temp= 1/sqrt(2);
-        if (j==3) temp=sqrt(2/PI); //TODO Null Value
+        temp = GetNullValue(j);
         multiplier[PT(0,0)] = temp;
         if (maxL > 0) {
             multiplier[PT(1,0)] = costheta*sqrt(j+1)*temp; //TODO: Get it from Hardcode
@@ -118,8 +117,9 @@ public:
 
 int main() {
 ULTRAS vec(0.707, 0.707, 0.707); //sintheta
-vec.calculate(1000);
-std::cout << vec.Y(0, 1, 2).r << '\n';
+vec.calculate(100);
+std::cout << vec.Y(0, 0, 1).r << '\n';
+//std::cout << vec.multiplier[0].r << "*" << vec.multipliers[0][PT(0,0)] << "*" << vec.multipliers[1][PT(0,0)]; //TEST
 return 0;
 }
 
