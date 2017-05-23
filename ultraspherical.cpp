@@ -69,12 +69,12 @@ private:
 
 public:
     complex usphFunction;
-    std::vector<complex> multiplier;
-    std::vector<std::vector<double>> multipliers;
+    std::vector<complex> multiplier; //j=1 complex number
+    std::vector<std::vector<double>> multipliers; //j!=1 real numbers
     void calculate(std::size_t maxL) {
-       multiplier = CalculateFirstMultiplier(maxL, Theta[0]); //j=1 complex number
+       multiplier = CalculateFirstMultiplier(maxL, Theta[0]);
        for (int j=2; j<=numofArguments; j++) {
-          multipliers.push_back(CalculateAnotherMultiplier(j, maxL, Theta[j-1])); //j!=1 real numbers
+          multipliers.push_back(CalculateAnotherMultiplier(j, maxL, Theta[j-1]));
        }
 
     }
@@ -116,9 +116,9 @@ public:
 
 
 int main() {
-ULTRAS vec(0.5, 0.5); //sintheta
-vec.calculate(10);
-std::cout << vec.Y(2, 2).r << '\n';
+ULTRAS vec(0.5, 0.5, 0.5, 0.5, 0.5); //sintheta
+vec.calculate(100);
+std::cout << vec.Y(1, 2, 3, 4, 5).r << '\n';
 //std::cout << vec.multiplier[1].r << "*" << vec.multipliers[0][PT(2,1)]; << "*" << vec.multipliers[1][PT(0,0)]; //TEST
 return 0;
 }
