@@ -1,32 +1,13 @@
-#include <cstddef>
-#include <cmath>
-#include <iostream>
-#include <vector>
-#include <string>
+#include "ultraspherical.h"
 
-#define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280
-
-int PT(int l, int m) {return m+(l*(l+1)/2);}
-
-struct complex {
-double r, i;
-};
-
-class ULTRAS {
-private:
-    std::size_t numofArguments;
-    std::size_t numofIndices;
-    std::vector<double> Theta;
-    std::vector<int> Index;
-
-    double GetNullValue (int j) {
+double ULTRAS::GetNullValue (int j) {
     if (j==2) {return 1/sqrt(2);} // precomputed
     else if (j==3) {return sqrt(2/PI);}
     else if (j==4) {return sqrt(3)/2;}
     else {return sqrt(j)/(sqrt(2*PI)*GetNullValue(j-1));} // if not precomputed -> recursion
     }
 
-    std::vector<double> CalculateAnotherMultiplier (int j, const std::size_t maxL, double sintheta) {
+std::vector<double> ULTRAS::CalculateAnotherMultiplier (int j, const std::size_t maxL, double sintheta) {
         std::vector<double> multiplier;
         double costheta = sqrt(1.-sintheta*sintheta);
         double temp=0;
@@ -49,8 +30,9 @@ private:
             }
          }
          return multiplier;
-    }
-    std::vector<complex> CalculateFirstMultiplier(const std::size_t maxL, double sintheta) {
+}
+
+std::vector<complex> ULTRAS::CalculateFirstMultiplier(const std::size_t maxL, double sintheta) {
         std::vector<complex> multiplier;
         complex normalization_factor = {1/sqrt(2*PI), 1/sqrt(2*PI)};
         for (std::size_t l=0; l<= maxL; l++) multiplier.push_back(normalization_factor);
@@ -65,20 +47,16 @@ private:
             multiplier[m].i*=s;
         }
         return multiplier;
-    }
+}
 
-public:
-    complex usphFunction;
-    std::vector<complex> multiplier; //j=1 complex number
-    std::vector<std::vector<double>> multipliers; //j!=1 real numbers
-    void calculate(std::size_t maxL) {
+void ULTRAS::calculate(std::size_t maxL) {
        multiplier = CalculateFirstMultiplier(maxL, Theta[0]);
        for (int j=2; j<=numofArguments; j++) {
           multipliers.push_back(CalculateAnotherMultiplier(j, maxL, Theta[j-1]));
        }
 
-    }
-    template<typename T = double> complex Y(int t) {
+}
+template<typename T = double> ULTRAS::complex Y(int t) {
        Index.push_back(t);
        numofIndices = Index.size();
        usphFunction = multiplier[Index[0]];
@@ -89,37 +67,25 @@ public:
           }
        }
        return usphFunction;
-    }
-    template<typename T = double, typename... Args> complex Y(int t, Args... args) {
+}
+template<typename T = double, typename... Args> ULTRAS::complex Y(int t, Args... args) {
         Index.push_back(t);
         return Y(args...);
-     }
-    template<typename T = double> void ULTRAS_REST(T t) {
+}
+template<typename T = double> void ULTRAS::ULTRAS_REST(T t) {
     Theta.push_back(t);
     //end of loop
-    }
-    template<typename T = double, typename... Args> void ULTRAS_REST(T t, Args... args) {
+}
+template<typename T = double, typename... Args> void ULTRAS::ULTRAS_REST(T t, Args... args) {
     Theta.push_back(t);
     ULTRAS_REST(args...);
-    }
-    template<typename T = double> ULTRAS(T t) {
+}
+template<typename T = double> ULTRAS::ULTRAS(T t) {
     Theta.push_back(t);
-    }
-    template<typename T = double, typename... Args> ULTRAS(T t, Args... args) {
+}
+template<typename T = double, typename... Args> ULTRAS::ULTRAS(T t, Args... args) {
     Theta.push_back(t);
     numofArguments = sizeof...(args); // one lost
     numofArguments++;
     ULTRAS_REST(args...);
-    }
-
-};
-
-
-int main() {
-ULTRAS vec(0.5, 0.5, 0.5, 0.5, 0.5); //sintheta
-vec.calculate(100);
-std::cout << vec.Y(1, 2, 3, 4, 5).r << '\n';
-//std::cout << vec.multiplier[1].r << "*" << vec.multipliers[0][PT(2,1)]; << "*" << vec.multipliers[1][PT(0,0)]; //TEST
-return 0;
 }
-
