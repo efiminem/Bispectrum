@@ -1,5 +1,7 @@
 #include "ultraspherical.h"
 
+int ULTRAS::PT(int l, int m) {return m+(l*(l+1)/2);}
+
 double ULTRAS::GetNullValue (int j) {
     if (j==2) {return 1/sqrt(2);} // precomputed
     else if (j==3) {return sqrt(2/PI);}
@@ -56,8 +58,9 @@ void ULTRAS::calculate(std::size_t maxL) {
        }
 
 }
-template<typename T = double> ULTRAS::complex Y(int t) {
-       Index.push_back(t);
+
+complex ULTRAS::get(std::vector<int> indices) {
+       Index = indices;
        numofIndices = Index.size();
        usphFunction = multiplier[Index[0]];
        if (numofArguments == numofIndices) {
@@ -68,24 +71,12 @@ template<typename T = double> ULTRAS::complex Y(int t) {
        }
        return usphFunction;
 }
-template<typename T = double, typename... Args> ULTRAS::complex Y(int t, Args... args) {
-        Index.push_back(t);
-        return Y(args...);
+
+void ULTRAS::set(std::vector<double> angles) {
+    Theta = angles;
 }
-template<typename T = double> void ULTRAS::ULTRAS_REST(T t) {
-    Theta.push_back(t);
-    //end of loop
+
+ULTRAS::ULTRAS(int dimension) {
+    numofArguments = dimension-1;
 }
-template<typename T = double, typename... Args> void ULTRAS::ULTRAS_REST(T t, Args... args) {
-    Theta.push_back(t);
-    ULTRAS_REST(args...);
-}
-template<typename T = double> ULTRAS::ULTRAS(T t) {
-    Theta.push_back(t);
-}
-template<typename T = double, typename... Args> ULTRAS::ULTRAS(T t, Args... args) {
-    Theta.push_back(t);
-    numofArguments = sizeof...(args); // one lost
-    numofArguments++;
-    ULTRAS_REST(args...);
-}
+
