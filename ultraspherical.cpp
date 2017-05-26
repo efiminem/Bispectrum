@@ -51,8 +51,9 @@ std::vector<complex> ULTRAS::CalculateFirstMultiplier(const std::size_t maxL, do
         return multiplier;
 }
 
-void ULTRAS::calculate(std::size_t maxL) {
+void ULTRAS::pack(std::size_t maxL) {
        multiplier = CalculateFirstMultiplier(maxL, Theta[0]);
+       multipliers.clear();
        for (int j=2; j<=numofArguments; j++) {
           multipliers.push_back(CalculateAnotherMultiplier(j, maxL, Theta[j-1]));
        }
@@ -79,4 +80,3 @@ void ULTRAS::set(std::vector<double> angles) {
 ULTRAS::ULTRAS(int dimension) {
     numofArguments = dimension-1;
 }
-

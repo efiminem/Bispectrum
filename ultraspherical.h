@@ -26,7 +26,7 @@ public:
     complex usphFunction;
     std::vector<complex> multiplier; //j=1 complex number
     std::vector<std::vector<double>> multipliers; //j!=1 real numbers
-    void calculate(std::size_t);
+    void pack(std::size_t);
     complex get(std::vector<int>);
     void set(std::vector<double>);
     ULTRAS(int);
